@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node app.js",
     "test": "mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results.xml",
-    "build": "echo 'Building the application...' && mkdir -p build && cp -r * build/"
+    "build": "echo 'Building the application...' && rsync -av --progress --exclude build ./ build/"
   },
   "dependencies": {},
   "devDependencies": {
