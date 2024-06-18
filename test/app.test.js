@@ -1,7 +1,7 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const { expect } = chai;
-const server = require("../app"); // 서버 파일을 불러옴
+const server = require("../app");
 
 chai.use(chaiHttp);
 

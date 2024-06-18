@@ -22,6 +22,7 @@ pipeline {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
                     sh 'npm install'
+                    sh 'npm audit fix --force || true' 
                 }
             }
         }
