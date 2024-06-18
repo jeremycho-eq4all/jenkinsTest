@@ -21,7 +21,7 @@ describe("GET /", () => {
       } else {
         console.log("Try server to kill on Unix/Linux.");
         execSync(
-          `PID=$(netstat -tuln | grep ':3010' | awk '{print $7}' | cut -d'/' -f1)
+          `PID=$(lsof -i :3010 | grep LISTEN | awk '{print $2}')
           if [ -n "$PID" ]; then
             echo "Killing process $PID"
             kill -9 $PID

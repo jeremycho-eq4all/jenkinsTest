@@ -24,11 +24,11 @@ pipeline {
                     // Ensure the server is not already running
                     try {
                         echo 'Checking if the server is already running...'
-                        if (isUnix()) {
-                            sh 'netstat -tuln | grep :3010 | awk \'{print $7}\' | cut -d\'/\' -f1 | xargs kill -9 || true'
-                        } else {
-                            bat 'for /F "tokens=5" %i in (\'netstat -aon ^| findstr :3010 ^| findstr LISTENING\') do taskkill /F /PID %i'
-                        }
+                        sh '''
+                        if lsof -i :3010; then
+                            lsof -i :3010 | grep LISTEN | awk '{print $2}' | xargs kill -9
+                        fi
+                        '''
                         echo 'Previous server instances killed'
                     } catch (Exception e) {
                         echo "No existing server to kill."
@@ -51,11 +51,7 @@ pipeline {
                 echo 'Post build actions started'
                 // Ensure the server is stopped after the tests
                 try {
-                    if (isUnix()) {
-                        sh 'kill $(cat .pidfile) || true'
-                    } else {
-                        bat 'for /F "tokens=5" %i in (\'netstat -aon ^| findstr :3010 ^| findstr LISTENING\') do taskkill /F /PID %i'
-                    }
+                    sh 'kill $(cat .pidfile) || true'
                     echo 'Server instances killed'
                 } catch (Exception e) {
                     echo "No existing server to kill."
