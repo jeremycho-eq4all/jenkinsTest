@@ -57,7 +57,7 @@ pipeline {
 
                     timeout(time: 5, unit: 'MINUTES') {
                         echo 'Running tests...'
-                        sh 'npm test > test-output.log 2>&1'
+                        sh 'npm test | tee test-output.log'
                         echo 'Tests completed, check test-output.log for details'
                     }
                 }
