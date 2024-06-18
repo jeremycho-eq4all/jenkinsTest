@@ -1,15 +1,13 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const { expect } = chai;
-const server = require("../app");
+const app = require("../app"); // app.js에서 내보낸 server를 가져옵니다.
 const { execSync } = require("child_process");
 const os = require("os");
 
 chai.use(chaiHttp);
 
 describe("GET /", () => {
-  let app;
-
   before((done) => {
     try {
       // 운영체제에 따라 다른 명령어를 실행
@@ -34,7 +32,7 @@ describe("GET /", () => {
 
     // 새로운 서버 시작
     console.log("Starting test server...");
-    app = server.listen(3010, () => {
+    app.listen(3010, () => {
       console.log("Test server running on port 3010");
       setTimeout(done, 5000); // 5초 기다렸다가 done 호출
     });
@@ -51,7 +49,7 @@ describe("GET /", () => {
   it("should return Hello, World!", (done) => {
     console.log("Sending request to server...");
     chai
-      .request(app)
+      .request("http://localhost:3010") // 서버 URL을 직접 지정
       .get("/")
       .end((err, res) => {
         if (err) {
