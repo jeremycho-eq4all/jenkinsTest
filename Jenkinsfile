@@ -30,16 +30,26 @@ pipeline {
         stage('Start Server') {
             steps {
                 script {
+                    // 기존 서버가 있다면 종료
+                    sh '''
+                        if lsof -i :3010; then
+                            lsof -i :3010 | grep LISTEN | awk \'{print $2}\' | xargs kill -9
+                        fi
+                    '''
                     // Node.js 서버를 백그라운드에서 시작하고 PID를 저장
-                    sh 'node app.js'
-                }
+                    sh 'nohup npm start & echo $! > .pidfile'
             }
         }
         
         stage('Test') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
-                    sh 'npm test || true' // 테스트 실패해도 빌드가 계속되도록 설정
+                    try {
+                        sh 'npm test'
+                    } finally {
+                        // 테스트 완료 후 서버 종료
+                        sh 'kill $(cat .pidfile) || true'
+                    }
                 }
             }
         }
