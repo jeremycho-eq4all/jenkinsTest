@@ -10,6 +10,7 @@ describe("GET /", () => {
   let app;
 
   before((done) => {
+    console.log("into before");
     this.timeout(60000); // 1분 타임아웃 설정
     try {
       // 기존 서버 종료
@@ -29,6 +30,7 @@ describe("GET /", () => {
   });
 
   after((done) => {
+    console.log("into after");
     this.timeout(60000); // 1분 타임아웃 설정
     if (app && app.close) {
       app.close(() => {
@@ -40,7 +42,9 @@ describe("GET /", () => {
     }
   });
 
+  console.log("before if(should return hello, world");
   it("should return Hello, World!", (done) => {
+    console.log("into if(should return hello, world");
     this.timeout(60000); // 1분 타임아웃 설정
     chai
       .request(app)
