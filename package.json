@@ -4,8 +4,12 @@
   "description": "A simple Node.js application",
   "main": "app.js",
   "scripts": {
-    "pretest": "chmod +x ./node_modules/.bin/mocha",
-    "test": "mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results.xml",
+    "pretest:unix": "chmod +x ./node_modules/.bin/mocha",
+    "pretest:win": "echo 'Windows does not require chmod'",
+    "pretest": "node -e \"require('os').platform() === 'win32' ? process.exit(0) : process.exit(require('child_process').execSync('npm run pretest:unix').status)\"",
+    "test:unix": "mocha",
+    "test:win": "mocha",
+    "test": "node -e \"require('os').platform() === 'win32' ? process.exit(require('child_process').execSync('npm run test:win').status) : process.exit(require('child_process').execSync('npm run test:unix').status)\"",
     "build": "echo 'Building the application...' && mkdir -p build && find . -maxdepth 1 ! -name build ! -name . ! -name .git -exec cp -r {} build/ \\;"
   },
   "dependencies": {
@@ -14,8 +18,7 @@
   "devDependencies": {
     "mocha": "^8.3.2",
     "chai": "^4.3.4",
-    "chai-http": "^4.3.0",
-    "mocha-junit-reporter": "^2.0.0"
+    "chai-http": "^4.3.0"
   },
   "author": "A 작업자, B 작업자",
   "license": "ISC"

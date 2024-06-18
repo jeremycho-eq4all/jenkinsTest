@@ -3,6 +3,7 @@ const chaiHttp = require("chai-http");
 const { expect } = chai;
 const server = require("../app");
 const { execSync } = require("child_process");
+const os = require("os");
 
 chai.use(chaiHttp);
 
@@ -11,11 +12,22 @@ describe("GET /", () => {
 
   before((done) => {
     try {
-      // 기존 서버 종료
-      console.log("Try server to kill.");
-      execSync(
-        "lsof -i :3010 | grep LISTEN | awk '{print $2}' | xargs kill -9 || true"
-      );
+      // 운영체제에 따라 다른 명령어를 실행
+      if (os.platform() === "win32") {
+        console.log("Try server to kill on Windows.");
+        execSync(
+          `for /F "tokens=5" %i in ('netstat -aon ^| findstr :3010 ^| findstr LISTENING') do taskkill /F /PID %i`
+        );
+      } else {
+        console.log("Try server to kill on Unix/Linux.");
+        execSync(
+          `PID=$(netstat -tuln | grep ':3010' | awk '{print $7}' | cut -d'/' -f1)
+          if [ -n "$PID" ]; then
+            echo "Killing process $PID"
+            kill -9 $PID
+          fi`
+        );
+      }
     } catch (e) {
       console.log("No existing server to kill.");
     }
