@@ -20,7 +20,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test || true' // 테스트 단계가 실패해도 빌드가 계속되도록 설정
+                sh 'npm test || true' // 테스트 실패해도 빌드가 계속되도록 설정
             }
         }
 
