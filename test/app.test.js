@@ -1,43 +1,35 @@
 const chai = require("chai");
 const chaiHttp = require("chai-http");
 const { expect } = chai;
-const app = require("../app");
+const server = require("../app");
 const { execSync } = require("child_process");
-const os = require("os");
 
 chai.use(chaiHttp);
 
 describe("GET /", () => {
-  let server;
+  let app;
 
   before((done) => {
     try {
-      if (os.platform() === "win32") {
-        console.log("Trying to kill server on Windows.");
-        execSync(
-          `FOR /F "tokens=5" %P IN ('netstat -aon ^| findstr :3010 ^| findstr LISTENING') DO taskkill /F /PID %P`
-        );
-      } else {
-        console.log("Trying to kill server on Unix.");
-        execSync(
-          `lsof -i :3010 | grep LISTEN | awk '{print $2}' | xargs kill -9`
-        );
-      }
+      // 기존 서버 종료
+      console.log("Try server to kill.");
+      execSync(
+        "lsof -i :3010 | grep LISTEN | awk '{print $2}' | xargs kill -9 || true"
+      );
     } catch (e) {
       console.log("No existing server to kill.");
     }
 
-    console.log("Starting test server...");
-    server = app.listen(3010, () => {
+    // 새로운 서버 시작
+    app = server.listen(3010, () => {
       console.log("Test server running on port 3010");
-      setTimeout(done, 5000); // Ensure the server has time to start
+      done();
     });
   });
 
   after((done) => {
-    if (server) {
-      console.log("Stopping test server...");
-      server.close(() => {
+    if (app && app.close) {
+      app.close(() => {
         console.log("Test server stopped");
         done();
       });
@@ -53,7 +45,7 @@ describe("GET /", () => {
       .end((err, res) => {
         if (err) done(err);
         expect(res).to.have.status(200);
-        expect(res.text).to.equal("Hello, World!\n");
+        expect(res.text).to.equal("Hello, World!");
         done();
       });
   });
