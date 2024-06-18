@@ -21,6 +21,7 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
+                    sh 'apt-get update && apt-get install -y lsof'
                     sh 'npm install'
                     sh 'npm audit fix --force || true' 
                 }
