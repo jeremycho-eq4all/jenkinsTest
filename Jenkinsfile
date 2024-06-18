@@ -9,7 +9,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Git 저장소에서 소스를 체크아웃합니다.
-                git 'https://github.com/jeremycho-eq4all/jenkinsTest.git'
+                git branch: 'main', url: 'https://github.com/jeremycho-eq4all/jenkinsTest.git'
             }
         }
 
@@ -47,12 +47,12 @@ pipeline {
             junit 'test-results.xml'
         }
         success {
-            mail to: 'a@example.com,b@example.com',
+            mail to: 'jeremycho@eq4all,co,kr',
                  subject: "Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
                  body: "Good job! The build was successful."
         }
         failure {
-            mail to: 'a@example.com,b@example.com',
+            mail to: 'jeremycho@eq4all.co.kr',
                  subject: "Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
                  body: "Oops! The build failed. Please check the logs."
         }
