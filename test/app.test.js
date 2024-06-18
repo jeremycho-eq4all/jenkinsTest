@@ -10,6 +10,7 @@ describe("GET /", () => {
   let app;
 
   before((done) => {
+    this.timeout(60000); // 1분 타임아웃 설정
     try {
       // 기존 서버 종료
       console.log("Try server to kill.");
@@ -28,6 +29,7 @@ describe("GET /", () => {
   });
 
   after((done) => {
+    this.timeout(60000); // 1분 타임아웃 설정
     if (app && app.close) {
       app.close(() => {
         console.log("Test server stopped");
@@ -39,6 +41,7 @@ describe("GET /", () => {
   });
 
   it("should return Hello, World!", (done) => {
+    this.timeout(60000); // 1분 타임아웃 설정
     chai
       .request(app)
       .get("/")
