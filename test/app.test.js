@@ -33,6 +33,7 @@ describe("GET /", () => {
     }
 
     // 새로운 서버 시작
+    console.log("Starting test server...");
     app = server.listen(3010, () => {
       console.log("Test server running on port 3010");
       done();
@@ -40,6 +41,7 @@ describe("GET /", () => {
   });
 
   after((done) => {
+    console.log("Stopping test server...");
     app.close(() => {
       console.log("Test server stopped");
       done();
@@ -47,11 +49,13 @@ describe("GET /", () => {
   });
 
   it("should return Hello, World!", (done) => {
+    console.log("Sending request to server...");
     chai
       .request(app)
       .get("/")
       .end((err, res) => {
         if (err) done(err);
+        console.log("Received response from server");
         expect(res).to.have.status(200);
         expect(res.text).to.equal("Hello, World!\n");
         done();
