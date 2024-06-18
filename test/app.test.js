@@ -54,7 +54,10 @@ describe("GET /", () => {
       .request(app)
       .get("/")
       .end((err, res) => {
-        if (err) done(err);
+        if (err) {
+          console.log("Error sending request:", err);
+          done(err);
+        }
         console.log("Received response from server");
         expect(res).to.have.status(200);
         expect(res.text).to.equal("Hello, World!\n");
