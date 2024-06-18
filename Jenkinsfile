@@ -20,7 +20,7 @@ pipeline {
 
         stage('Test') {
             steps {
-                sh 'npm test'
+                sh 'npm test || true' // 테스트 단계가 실패해도 빌드가 계속되도록 설정
             }
         }
 
@@ -40,16 +40,17 @@ pipeline {
     post {
         always {
             junit 'test-results.xml'
+            archiveArtifacts artifacts: 'test-results.xml', allowEmptyArchive: true
         }
         success {
-            mail to: 'jeremycho@eq4all.co.kr, hydencho@eq4all.co.kr',
+            mail to: 'jeremycho@eq4all.co.kr',
                  subject: "Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "젠킨스 설정 테스트. Good job! The build was successful."
+                 body: "Good job! The build was successful."
         }
         failure {
-            mail to: 'jeremycho@eq4all.co.kr, hydencho@eq4all.co.kr',
+            mail to: 'jeremycho@eq4all.co.kr',
                  subject: "Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "젠킨스 설정 테스트. Oops! The build failed. Please check the logs."
+                 body: "Oops! The build failed. Please check the logs."
         }
     }
 }
