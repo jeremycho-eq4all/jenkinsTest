@@ -8,7 +8,9 @@
     "test": "mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results.xml",
     "build": "echo 'Building the application...' && mkdir -p build && find . -maxdepth 1 ! -name build ! -name . -exec cp -r {} build/ \\;"
   },
-  "dependencies": {},
+  "dependencies": {
+    "express": "^4.17.1"
+  },
   "devDependencies": {
     "mocha": "^8.3.2",
     "chai": "^4.3.4",

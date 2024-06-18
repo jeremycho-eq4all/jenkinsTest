@@ -1,11 +1,11 @@
-const http = require("http");
+const express = require("express");
+const app = express();
+const port = 3010;
 
-const server = http.createServer((req, res) => {
-  res.statusCode = 200;
-  res.setHeader("Content-Type", "text/plain");
-  res.end("Hello, World!\n");
+app.get("/", (req, res) => {
+  res.send("Hello, World!\n");
 });
 
-server.listen(3010, "127.0.0.1", () => {
-  console.log("Server running at http://127.0.0.1:3010/");
+app.listen(port, () => {
+  console.log(`Server is running on http://127.0.0.1:${port}`);
 });
