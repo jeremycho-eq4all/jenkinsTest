@@ -4,9 +4,9 @@
   "description": "A simple Node.js application",
   "main": "app.js",
   "scripts": {
-    "start": "node app.js",
+    "pretest": "chmod +x ./node_modules/.bin/mocha",
     "test": "mocha --reporter mocha-junit-reporter --reporter-options mochaFile=./test-results.xml",
-    "build": "echo 'Building the application...' && mkdir -p build && find . -maxdepth 1 ! -name build ! -name . -exec cp -r {} build/ \\;"
+    "build": "echo 'Building the application...' && mkdir -p build && find . -maxdepth 1 ! -name build ! -name . ! -name .git -exec cp -r {} build/ \\;"
   },
   "dependencies": {
     "express": "^4.17.1"
