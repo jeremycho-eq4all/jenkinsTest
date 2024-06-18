@@ -30,8 +30,8 @@ pipeline {
         stage('Start Server') {
             steps {
                 script {
-                    // 기존 서버가 있다면 종료
-                    sh 'fuser -k 3010/tcp || true'
+                     // 기존 서버가 있다면 종료
+                    sh 'lsof -i :3010 | grep LISTEN | awk \'{print $2}\' | xargs kill -9 || true'
                     // Node.js 서버를 백그라운드에서 시작하고 PID를 저장
                     sh 'nohup npm start & echo $! > .pidfile'
                 }
