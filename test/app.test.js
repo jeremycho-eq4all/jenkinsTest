@@ -36,7 +36,7 @@ describe("GET /", () => {
     console.log("Starting test server...");
     app = server.listen(3010, () => {
       console.log("Test server running on port 3010");
-      done();
+      setTimeout(done, 5000); // 5초 기다렸다가 done 호출
     });
   });
 
