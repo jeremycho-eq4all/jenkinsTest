@@ -13,7 +13,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 timeout(time: 5, unit: 'MINUTES') {
+                    echo 'Starting checkout...'
                     git branch: 'main', url: 'https://github.com/jeremycho-eq4all/jenkinsTest.git', credentialsId: 'github-token'
+                    echo 'Checkout completed'
                 }
             }
         }
@@ -21,8 +23,10 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
+                    echo 'Installing dependencies...'
                     sh 'npm install'
-                    sh 'npm audit fix --force || true' 
+                    sh 'npm audit fix --force || true'
+                    echo 'Dependencies installed'
                 }
             }
         }
@@ -49,7 +53,12 @@ pipeline {
                         sh 'nohup npm start &'
                         sleep 10
                         echo 'Server started, running tests...'
-                        sh 'npm test'
+                    }
+
+                    timeout(time: 5, unit: 'MINUTES') {
+                        echo 'Running tests...'
+                        sh 'npm test > test-output.log 2>&1'
+                        echo 'Tests completed, check test-output.log for details'
                     }
                 }
             }
@@ -60,11 +69,18 @@ pipeline {
         always {
             script {
                 timeout(time: 1, unit: 'MINUTES') {
-                    sh 'if [ -f .pidfile ]; then kill $(cat .pidfile) || true; fi'
+                    echo 'Post build actions started'
+                    sh '''
+                        if [ -f .pidfile ]; then
+                            kill $(cat .pidfile) || true
+                        fi
+                    '''
+                    echo 'Server instances killed'
                 }
             }
             junit 'test-results.xml'
-            archiveArtifacts artifacts: 'test-results.xml', allowEmptyArchive: true
+            archiveArtifacts artifacts: 'test-results.xml, test-output.log', allowEmptyArchive: true
+            echo 'Post build actions completed'
         }
         success {
             mail to: 'jeremycho@eq4all.co.kr',
