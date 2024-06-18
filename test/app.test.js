@@ -27,6 +27,7 @@ describe("GET /", () => {
       .request(app)
       .get("/")
       .end((err, res) => {
+        if (err) done(err);
         expect(res).to.have.status(200);
         expect(res.text).to.equal("Hello, World!\n");
         done();

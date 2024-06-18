@@ -5,34 +5,48 @@ pipeline {
         CI = 'true'
     }
 
+    options {
+        timeout(time: 30, unit: 'MINUTES') // 전체 파이프라인에 타임아웃 설정
+    }
+
     stages {
         stage('Checkout') {
             steps {
-                git branch: 'main', url: 'https://github.com/jeremycho-eq4all/jenkinsTest.git', credentialsId: 'github-token'
+                timeout(time: 5, unit: 'MINUTES') {
+                    git branch: 'main', url: 'https://github.com/jeremycho-eq4all/jenkinsTest.git', credentialsId: 'github-token'
+                }
             }
         }
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm install'
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh 'npm install'
+                }
             }
         }
 
         stage('Test') {
             steps {
-                sh 'npm test || true' // 테스트 실패해도 빌드가 계속되도록 설정
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh 'npm test || true' // 테스트 실패해도 빌드가 계속되도록 설정
+                }
             }
         }
 
         stage('Build') {
             steps {
-                sh 'npm run build'
+                timeout(time: 10, unit: 'MINUTES') {
+                    sh 'npm run build'
+                }
             }
         }
 
         stage('Deploy') {
             steps {
-                echo 'Deploying application...'
+                timeout(time: 10, unit: 'MINUTES') {
+                    echo 'Deploying application...'
+                }
             }
         }
     }
