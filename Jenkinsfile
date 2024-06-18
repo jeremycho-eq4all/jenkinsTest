@@ -27,6 +27,17 @@ pipeline {
             }
         }
 
+        stage('Start Server') {
+            steps {
+                script {
+                    // 기존 서버가 있다면 종료
+                    sh 'fuser -k 3010/tcp || true'
+                    // Node.js 서버를 백그라운드에서 시작하고 PID를 저장
+                    sh 'nohup npm start & echo $! > .pidfile'
+                }
+            }
+        }
+        
         stage('Test') {
             steps {
                 timeout(time: 10, unit: 'MINUTES') {
@@ -54,6 +65,7 @@ pipeline {
 
     post {
         always {
+            sh 'kill $(cat .pidfile) || true'
             junit 'test-results.xml'
             archiveArtifacts artifacts: 'test-results.xml', allowEmptyArchive: true
         }
