@@ -42,14 +42,14 @@ pipeline {
             junit 'test-results.xml'
         }
         success {
-            mail to: 'jeremycho@eq4all.co.kr',
+            mail to: 'jeremycho@eq4all.co.kr, hydencho@eq4all.co.kr',
                  subject: "Success: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "Good job! The build was successful."
+                 body: "젠킨스 설정 테스트. Good job! The build was successful."
         }
         failure {
-            mail to: 'jeremycho@eq4all.co.kr',
+            mail to: 'jeremycho@eq4all.co.kr, hydencho@eq4all.co.kr',
                  subject: "Failed: ${env.JOB_NAME} - Build #${env.BUILD_NUMBER}",
-                 body: "Oops! The build failed. Please check the logs."
+                 body: "젠킨스 설정 테스트. Oops! The build failed. Please check the logs."
         }
     }
 }
